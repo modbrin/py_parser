@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-Python parser for SourceAnalyzer
-================================
 
 ### Features
 
@@ -47,4 +44,3 @@ foo().bar().a.b()
 =======
 # py_parser
 An implementation of compiler front-end for python programming language
->>>>>>> 56dbd6ce04b4f4574a4033db34b4a3c32d06d063

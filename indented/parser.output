@@ -1,0 +1,108 @@
+Grammar
+
+    0 $accept: root $end
+
+    1 root: root stuff
+    2     | stuff
+
+    3 stuff: TOK_STUFF
+    4      | TOK_STUFF TOK_REST
+    5      | INDENT
+    6      | DEDENT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+INDENT (258) 5
+DEDENT (259) 6
+TOK_STUFF (260) 3 4
+TOK_REST (261) 4
+
+
+Nonterminals, with rules where they appear
+
+$accept (7)
+    on left: 0
+root (8)
+    on left: 1 2, on right: 0 1
+stuff (9)
+    on left: 3 4 5 6, on right: 1 2
+
+
+state 0
+
+    0 $accept: . root $end
+
+    INDENT     shift, and go to state 1
+    DEDENT     shift, and go to state 2
+    TOK_STUFF  shift, and go to state 3
+
+    root   go to state 4
+    stuff  go to state 5
+
+
+state 1
+
+    5 stuff: INDENT .
+
+    $default  reduce using rule 5 (stuff)
+
+
+state 2
+
+    6 stuff: DEDENT .
+
+    $default  reduce using rule 6 (stuff)
+
+
+state 3
+
+    3 stuff: TOK_STUFF .
+    4      | TOK_STUFF . TOK_REST
+
+    TOK_REST  shift, and go to state 6
+
+    $default  reduce using rule 3 (stuff)
+
+
+state 4
+
+    0 $accept: root . $end
+    1 root: root . stuff
+
+    $end       shift, and go to state 7
+    INDENT     shift, and go to state 1
+    DEDENT     shift, and go to state 2
+    TOK_STUFF  shift, and go to state 3
+
+    stuff  go to state 8
+
+
+state 5
+
+    2 root: stuff .
+
+    $default  reduce using rule 2 (root)
+
+
+state 6
+
+    4 stuff: TOK_STUFF TOK_REST .
+
+    $default  reduce using rule 4 (stuff)
+
+
+state 7
+
+    0 $accept: root $end .
+
+    $default  accept
+
+
+state 8
+
+    1 root: root stuff .
+
+    $default  reduce using rule 1 (root)

@@ -16,12 +16,16 @@
 
     static string skipMessage(string _ch);
     static void skipComments();
+
+    def func:
+        pass
 %}
 
 identifier      [_a-zA-Z][_a-zA-Z0-9]*
 defined         "and"|"elif"|"global"|"or"|"assert"|"else"|"if"|"except"|"pass"|"break"|"print"|"exec"|"in"|"raise"|"continue"|"finally"|"is"|"return"|"for"|"lambda"|"try"|"del"|"not"|"while"
 quote1          "\'"[^'\\]*"\'"
 quote2          "\""[^"\\]*"\""
+
 
 %%
 \n\r|\r\n|\n|\r {

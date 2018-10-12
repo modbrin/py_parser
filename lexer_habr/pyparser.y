@@ -401,8 +401,6 @@ static string get_call_function_name_from_call_chain(string call_chain)
     return name;
 }
 
-#include <typeinfo>
-
 int main(int argc, char* argv[])
 {
     cout << argv[1] << endl;
