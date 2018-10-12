@@ -24,6 +24,7 @@
     #include <string>
     #include <iostream>
     #include <stack>
+    #include <fstream>
 
     // extern "C" {
     //   #include "sa3parsers.h"
@@ -65,7 +66,7 @@
 
     static const string type = "undefined";
     static bool isInteractive;
-    int main();
+    int main(int argc, char* argv[]);
     static string get_call_function_name_from_call_chain(string call_chain);
 %}
 
@@ -400,7 +401,18 @@ static string get_call_function_name_from_call_chain(string call_chain)
     return name;
 }
 
-int main()
+#include <typeinfo>
+
+int main(int argc, char* argv[])
 {
-    return yyparse();
+    cout << argv[1] << endl;
+    if (argc > 1) {
+        FILE *fl;
+        fl = fopen(argv[1],"r");
+        yyin = fl;
+    }
+
+    yyparse();
+
+    return 0;
 }

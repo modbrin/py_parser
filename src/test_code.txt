@@ -1,0 +1,8 @@
+# This program prints Hello, world!
+
+def class Test:
+    def foo(a, b):
+        def bar(c, d=g("arg")):
+            pass
+            
+print('Hello, world!')

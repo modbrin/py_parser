@@ -3,10 +3,10 @@
     #include <iostream>
 
     using namespace std;
-    #define DEBUG
+    //#define DEBUG
     #define YYSTYPE string
 
-    #include "pyparser.tab.h"
+    //#include "pyparser.tab.h"
     
     extern YYLTYPE yylloc;
     #define YY_USER_INIT yylloc.first_line=1;

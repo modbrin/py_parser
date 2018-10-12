@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Python parser for SourceAnalyzer
 ================================
 
@@ -43,3 +44,7 @@ foo().bar().a.b()
 
 * SA3 integration: https://bitbucket.org/agudulin/sourceanalyzer3-call-graph-core-with-pyparser
 * Habrahabr article: http://habrahabr.ru/post/141756/
+=======
+# py_parser
+An implementation of compiler front-end for python programming language
+>>>>>>> 56dbd6ce04b4f4574a4033db34b4a3c32d06d063

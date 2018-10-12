@@ -132,8 +132,8 @@ dotted_name (30)
 func_call_params (31)
     on left: 35 36, on right: 32 43 52
 call_params (32)
-    on left: 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52,
-    on right: 36 44 45 46 47 48 49 50 51 52
+    on left: 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52, on right:
+    36 44 45 46 47 48 49 50 51 52
 
 
 state 0
