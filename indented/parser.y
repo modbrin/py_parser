@@ -1,28 +1,8 @@
-/*
-Copyright (C) 2013 Lucas Beyer (http://lucasb.eyer.be)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to
-deal in the Software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-sell copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
-*/
 
 %{
 #include <cstdio>
 #include <iostream>
+#include <string>
 
 // stuff from flex that bison needs to know about:
 extern "C" int yylex();
@@ -31,31 +11,88 @@ extern "C" FILE *yyin;
 
 void yyerror(const char *s);
 
-#define YYSTYPE int
+#define YYSTYPE std::string
 %}
 
+%token NONE
+%token TRUE
+%token FALSE
+%token IMPORT
+%token NEWLINE
 %token INDENT
 %token DEDENT
-
+%token END
 %token TOK_STUFF TOK_REST
+%token T_NUMBER 
+%token T_STRING
+%token T_NAME
+%token PLUS
+%token MULTIPLY
+%token MINUS
+%token OR
+%token TILDA
+%token LESS_LESS
+%token GREATER_GREATER
+%token STAR_STAR
+%token R_SLASH
+%token R_SLASH_SLASH
+%token T_AT
+%token PERCENT
+%token AND
+%token XOR
 
 %locations
-
- /* %debug */
+%start start
 
 %%
-root:
-    root stuff | stuff ;
 
-stuff:
-     TOK_STUFF { std::cout << "stuff" << "(" << @1.first_line << ":" << @1.first_column << "-" << @1.last_column << ")" << std::endl; }
-     |
-     TOK_STUFF TOK_REST { std::cout << "stuff" << "(" << @1.first_line << ":" << @1.first_column << "-" << @1.last_column << ") " << "with rest"  << "(" << @2.first_line << ":" << @2.first_column << "-" << @2.last_column << ")" << std::endl; }
-     |
-     INDENT { std::cout << "indent" << "(" << @1.first_line << ":" << @1.first_column << "-" << @1.last_column << ")" << std::endl; }
-     |
-     DEDENT { std::cout << "dedent" << "(" << @1.first_line << ":" << @1.first_column << "-" << @1.last_column << ")" << std::endl; }
-    ;
+start: expr NEWLINE {}
+		| star_expr NEWLINE {}
+		;
+
+star_expr: MULTIPLY expr {}
+			;
+
+expr: xor_expr {}
+	  | expr OR xor_expr {}
+	  ;
+xor_expr: and_expr {}
+			| xor_expr XOR and_expr {}
+		 ;
+and_expr: shift_expr {}
+			| and_expr AND shift_expr {}
+			;
+shift_expr: arith_expr {}
+			| shift_expr LESS_LESS arith_expr {}
+			| shift_expr GREATER_GREATER arith_expr {}
+			;
+arith_expr: term {}
+			| arith_expr PLUS term {}
+			| arith_expr MINUS term {}
+			;
+term: factor {}
+		| term MULTIPLY factor {}
+		| term T_AT factor {}
+		| term R_SLASH factor {}
+		| term PERCENT factor {}
+		| term R_SLASH_SLASH factor {}
+		;
+factor: PLUS factor {}
+		| MINUS factor {}
+		| TILDA factor {}
+		| power {}
+		;
+power: atom {}
+		| atom STAR_STAR factor {}
+		;
+atom : T_NAME {}
+		| T_NUMBER {} 
+		| T_STRING {}
+		| "..." {}
+		| "None" {}
+		| "True" {}
+		| "False" {}
+		;
 
 %%
 
@@ -89,4 +126,3 @@ void yyerror(const char *s) {
     std::cerr << g_current_filename << ":" << yylloc.first_line << ":" << yylloc.first_column << "-" << yylloc.last_column << ": Parse error: " << s << std::endl;
     exit(-1);  // Might as well halt now.
 }
-

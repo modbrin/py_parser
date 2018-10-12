@@ -36,7 +36,8 @@ extern const char* g_current_filename;
 
 /* Don't mangle yylex please! */
 #define YY_DECL extern "C" int yylex()
-#define YYSTYPE int
+#define YYSTYPE std::string
+
 #include "parser.tab.h"
 
 #define YY_USER_INIT { \
@@ -110,11 +111,13 @@ void set_yycolumn(int val) {
                         } else {
                             BEGIN(indent_caller);
                         }
-
+                        std::cout<<"DEDENT"<<std::endl;
                         return DEDENT;
                     } else {
                         yyterminate();
                     }
+                    std::cout<<"EOF"<<std::endl;
+                    return EOF;
                 }
 
 <indent>.       {
@@ -130,6 +133,7 @@ void set_yycolumn(int val) {
                     if(g_current_line_indent > g_indent_levels.top()) {
                         g_indent_levels.push(g_current_line_indent);
                         BEGIN(indent_caller);
+                        std::cout<<"INDENT"<<std::endl;
                         return INDENT;
                     } else if(g_current_line_indent < g_indent_levels.top()) {
                         // Outdenting is the most difficult, as we might need to
@@ -159,7 +163,7 @@ void set_yycolumn(int val) {
                         } else {
                             BEGIN(indent_caller);
                         }
-
+                        std::cout<<"DEDENT"<<std::endl;
                         return DEDENT;
                     } else {
                         // No change in indentation, not much to do here...
@@ -167,9 +171,32 @@ void set_yycolumn(int val) {
                     }
                 }
 
-<normal>\n    { g_current_line_indent = 0; indent_caller = YY_START; BEGIN(indent); }
-<normal>tok { return TOK_STUFF; }
+<normal>\n    { g_current_line_indent = 0; indent_caller = YY_START; BEGIN(indent); std::cout<<"NEWLINE"<<std::endl; return NEWLINE;}
+<normal>import { std::cout<<"import"<<std::endl; return IMPORT; }
+<normal>[a-zA-Z]+[_]?[a-zA-Z0-9]*  { std::cout<<"name: "<<std::endl; yylval = yytext;return T_NAME; }
+<normal>[0-9]+([.][0-9]+)?(("e"|"E")[+|-]?[0-9]+)?([+|-][0-9]*("j"|"J"))? { std::cout<<"number: "<<yytext<<std::endl; yylval = yytext;return T_NUMBER;}
+<normal>["][0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]'-]*["] { yylval = yytext;return T_STRING; }
+<normal>\'[ 0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]"-]*\' { yylval = yytext;return T_STRING; }
+<normal>[0-9]*[l|L] { yylval = yytext; return T_NUMBER; }
+<normal>None { return NONE; }
+<normal>True { return TRUE; }
+<normal>\| { return OR;}
+<normal>~ { return TILDA; }
+<normal><< { return LESS_LESS;}
+<normal>>> { return GREATER_GREATER;}
+<normal>\*\* { return STAR_STAR;}
+<normal>\/\/ { return R_SLASH_SLASH;}
+<normal>\/ { return R_SLASH;}
+<normal>@ { return T_AT;}
+<normal>% { return PERCENT;}
+<normal>& { return AND;}
+<normal>\^ { return XOR;}
+<normal>\* { return MULTIPLY;}
+<normal>\+ { std::cout<<"PLUS "<<std::endl; return PLUS;}
+<normal>- { return MINUS;}
+<normal>False { return FALSE; }
 <normal>" ".+ { return TOK_REST; }
+<indent><<EOF>> { std::cout<<"EOF"<<std::endl; return END; }
 
 (.|\n)  { std::cerr << g_current_filename << ":" << yylineno << ":" << yycolumn << ": Unexpected character: " << yytext << std::endl; exit(1); }
 
