@@ -36,6 +36,7 @@ extern const char* g_current_filename;
 
 /* Don't mangle yylex please! */
 #define YY_DECL extern "C" int yylex()
+#define YYDEBUG 1
 #define YYSTYPE Node*
 
 #include "node.h"
@@ -112,14 +113,14 @@ void set_yycolumn(int val) {
                         } else {
                             BEGIN(indent_caller);
                         }
-                        // std::cout<<"DEDENT"<<std::endl;
+                        std::cout<<"DEDENT"<<std::endl;
                         yylval = new Node("DEDENT");
                         return DEDENT;
                     } else {
                         // std::cout<<"EOF"<<std::endl;
                         yylval = new Node("EOF");
                         return EOF;
-                        // yyterminate();
+                        //yyterminate();
                     }
                 }
 
@@ -167,7 +168,7 @@ void set_yycolumn(int val) {
                         } else {
                             BEGIN(indent_caller);
                         }
-                        // std::cout<<"DEDENT"<<std::endl;
+                        std::cout<<"DEDENT"<<std::endl;
                         yylval = new Node("DEDENT");
                         return DEDENT;
                     } else {
@@ -176,38 +177,15 @@ void set_yycolumn(int val) {
                     }
                 }
 
-<normal>\n    { g_current_line_indent = 0; indent_caller = YY_START; BEGIN(indent); return NEWLINE;}
+<normal>\n    { g_current_line_indent = 0; indent_caller = YY_START; BEGIN(indent);yylval = new Node("NEWLINE"); std::cout<<"NEWLINE"<<std::endl; return NEWLINE;}
 <normal>import { yylval = new Node(yytext); return IMPORT; }
-<normal>[a-zA-Z]+[_]?[a-zA-Z0-9]*  { yylval = new Node(yytext);return T_NAME; }
-<normal>[0-9]+([.][0-9]+)?(("e"|"E")[+|-]?[0-9]+)?([+|-][0-9]*("j"|"J"))? { yylval = new Node(yytext);return T_NUMBER;}
-<normal>["][0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]'-]*["] { yylval = new Node(yytext);return T_STRING; }
-<normal>\'[ 0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]"-]*\' { yylval = new Node(yytext);return T_STRING; }
-<normal>[0-9]*[l|L] { yylval = new Node(yytext); return T_NUMBER; }
 <normal>None { yylval = new Node(yytext);return NONE; }
 <normal>True { yylval = new Node(yytext);return TRUE; }
-<normal>\| { yylval = new Node(yytext);return OR;}
-<normal>~ { yylval = new Node(yytext);return TILDA; }
-<normal><< { yylval = new Node(yytext);return LESS_LESS;}
-<normal>>> { yylval = new Node(yytext);return GREATER_GREATER;}
-<normal>\*\* { yylval = new Node(yytext);return STAR_STAR;}
-<normal>\/\/ { yylval = new Node(yytext);return R_SLASH_SLASH;}
-<normal>\/ { yylval = new Node(yytext);return R_SLASH;}
-<normal>@ { yylval = new Node(yytext);return T_AT;}
-<normal>% { yylval = new Node(yytext);return PERCENT;}
-<normal>& { yylval = new Node(yytext);return AND;}
-<normal>\^ { yylval = new Node(yytext);return XOR;}
-<normal>\* { yylval = new Node(yytext);return MULTIPLY;}
-<normal>\+ { yylval = new Node(yytext);return PLUS;}
-<normal>- { yylval = new Node(yytext);return MINUS;}
 <normal>False { yylval = new Node(yytext);return FALSE; }
 <normal>def { yylval = new Node(yytext);return DEF; }
 <normal>-> { yylval = new Node(yytext);return MINUS_GREATER; }
 <normal>\( { yylval = new Node(yytext);return L_PAREN; }
 <normal>\) { yylval = new Node(yytext);return R_PAREN; }
-<normal>= { yylval = new Node(yytext);return EQUAL; }
-<normal>\. { yylval = new Node(yytext);return COMMA; }
-<normal>: { yylval = new Node(yytext);return COLON; }
-<normal>; { yylval = new Node(yytext);return SEMICOLON; }
 <normal>\+= { yylval = new Node(yytext);return PLUS_EQUAL; }
 <normal>-= { yylval = new Node(yytext);return MINUS_EQUAL; }
 <normal>\*= { yylval = new Node(yytext);return STAR_EQUAL; }
@@ -238,19 +216,40 @@ void set_yycolumn(int val) {
 <normal>or { yylval = new Node(yytext);return LIT_OR; }
 <normal>and { yylval = new Node(yytext);return LIT_AND; }
 <normal>not { yylval = new Node(yytext);return LIT_NOT; }
-<normal>< { yylval = new Node(yytext);return LESS; }
-<normal>> { yylval = new Node(yytext);return GREATER; }
 <normal>== { yylval = new Node(yytext);return EQUAL_EQUAL; }
 <normal>>= { yylval = new Node(yytext);return GREATER_EQUAL; }
 <normal><= { yylval = new Node(yytext);return LESS_EQUAL; }
 <normal><> { yylval = new Node(yytext);return LESS_GREATER; }
 <normal>!= { yylval = new Node(yytext);return EXCL_EQUAL; }
+<normal>\*\* { yylval = new Node(yytext);return STAR_STAR;}
+<normal>\* { yylval = new Node(yytext);return MULTIPLY;}
+<normal>= { yylval = new Node(yytext);return EQUAL; }
+<normal>: { yylval = new Node(yytext);return COLON; }
+<normal>; { yylval = new Node(yytext);return SEMICOLON; }
+<normal>\^ { yylval = new Node(yytext);return XOR;}
+<normal>\+ { yylval = new Node(yytext);return PLUS;}
+<normal>- { yylval = new Node(yytext);return MINUS;}
+<normal>\| { yylval = new Node(yytext);return OR;}
+<normal>~ { yylval = new Node(yytext);return TILDA; }
+<normal><< { yylval = new Node(yytext);return LESS_LESS;}
+<normal>>> { yylval = new Node(yytext);return GREATER_GREATER;}
+<normal>\/\/ { yylval = new Node(yytext);return R_SLASH_SLASH;}
+<normal>\/ { yylval = new Node(yytext);return R_SLASH;}
+<normal>< { yylval = new Node(yytext);return LESS; }
+<normal>> { yylval = new Node(yytext);return GREATER; }
+<normal>@ { yylval = new Node(yytext);return T_AT;}
+<normal>% { yylval = new Node(yytext);return PERCENT;}
+<normal>& { yylval = new Node(yytext);return AND;}
 <normal>not\sin { yylval = new Node(yytext);return NOT_IN; }
 <normal>is { yylval = new Node(yytext);return T_IS; }
 <normal>is\snot { yylval = new Node(yytext);return IS_NOT; }
-<normal>" ".+ { yylval = new Node(yytext);return TOK_REST; }
-<normal><<EOF>> { yylval = new Node(yytext);std::cout<<"EOF"<<std::endl; return END; }
-
+<normal>[0-9]*[l|L] { yylval = new Node(yytext); return T_NUMBER; }
+<normal>[a-zA-Z]+[_]?[a-zA-Z0-9]*  { yylval = new Node(yytext);return T_NAME; }
+<normal>[0-9]+([.][0-9]+)?(("e"|"E")[+|-]?[0-9]+)?([+|-][0-9]*("j"|"J"))? { yylval = new Node(yytext);return T_NUMBER;}
+<normal>["][0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]'-]*["] { yylval = new Node(yytext);return T_STRING; }
+<normal>\'[ 0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]"-]*\' { yylval = new Node(yytext);return T_STRING; }
+<normal>[ ]
+<normal><<EOF>> { yylval = new Node(yytext); return END; }
 (.|\n)  { std::cerr << g_current_filename << ":" << yylineno << ":" << yycolumn << ": Unexpected character: " << yytext << std::endl; exit(1); }
 
 %%
