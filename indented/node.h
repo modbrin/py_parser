@@ -8,13 +8,13 @@ public:
 	Node(std::string name): name(name), left(0), right(0) {}
     Node(std::string name,Node *left): name(name), left(left), right(0) {}
     Node(std::string name,Node *left,Node *right): name(name), left(left), right(right) {}
-	void print(){
-        std::cout <<"Start "<<name<<std::endl;   
+	void print(std::string add = ""){
+        std::cout<<add <<"Start "<<name<<std::endl;   
         if(left)
-            left->print();
+            left->print(add + "   ");
         if(right)
-            right->print();
-        std::cout <<"End "<<name << std::endl;
+            right->print(add + "   ");
+        std::cout <<add<<"End "<<name << std::endl;
     }
 
 };

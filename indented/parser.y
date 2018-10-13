@@ -54,52 +54,55 @@ void yyerror(const char *s);
 
 %%
 
-start: expr NEWLINE {$$ = $1; $$->print(); }
-		| star_expr NEWLINE {$$ = $1; $$->print(); }
+start: expr NEWLINE { $$ = $1; $$->print(); }
+		| star_expr NEWLINE{$$ = $1; $$->print(); }
+		| expr { $$ = $1; $$->print(); }
+		| star_expr{$$ = $1; $$->print(); }
+		| END {$$ = $1; $$->print();}
 		;
 
 star_expr: MULTIPLY expr {$$ = new Node("star expr",$2); }
 			;
 
-expr: xor_expr {$$ = $1;}
-	  | expr OR xor_expr { $$ = new Node("expr OR",$1,$3);}
+expr: expr OR xor_expr { $$ = new Node("expr OR",$1,$3);}
+	  | xor_expr {$$ = $1;}
 	  ;
-xor_expr: and_expr {}
-			| xor_expr XOR and_expr {}
+xor_expr: xor_expr XOR and_expr {$$ = new Node("xor_expr XOR",$1,$3);}
+			| and_expr {$$ = $1;}
 		 ;
-and_expr: shift_expr {}
-			| and_expr AND shift_expr {}
+and_expr: and_expr AND shift_expr {$$ = new Node("and_expr AND",$1,$3);}
+			| shift_expr {$$ = $1;}
 			;
-shift_expr: arith_expr {}
-			| shift_expr LESS_LESS arith_expr {}
-			| shift_expr GREATER_GREATER arith_expr {}
+shift_expr: shift_expr LESS_LESS arith_expr {$$ = new Node("shit_expr <<",$1,$3);}
+			| shift_expr GREATER_GREATER arith_expr {$$ = new Node("shit_expr >>",$1,$3);}
+			| arith_expr {$$ = $1;}
 			;
-arith_expr: term {}
-			| arith_expr PLUS term {}
-			| arith_expr MINUS term {}
+arith_expr: arith_expr PLUS term {$$ = new Node("arith_expr +",$1,$3);}
+			| arith_expr MINUS term {$$ = new Node("arith_expr -",$1,$3);}
+			| term {$$ = $1;}
 			;
-term: factor {}
-		| term MULTIPLY factor {}
-		| term T_AT factor {}
-		| term R_SLASH factor {}
-		| term PERCENT factor {}
-		| term R_SLASH_SLASH factor {}
+term: term R_SLASH_SLASH factor {$$ = new Node("term //",$1,$3);}
+		| term MULTIPLY factor {$$ = new Node("term *",$1,$3);}
+		| term T_AT factor {$$ = new Node("term @",$1,$3);}
+		| term R_SLASH factor {$$ = new Node("term /",$1,$3);}
+		| term PERCENT factor {$$ = new Node("term %",$1,$3);}
+		| factor {$$ = $1;}
 		;
-factor: PLUS factor {}
-		| MINUS factor {}
-		| TILDA factor {}
-		| power {}
+factor: PLUS factor {$$ = new Node("factor +", $2);}
+		| MINUS factor {$$ = new Node("factor -", $2);}
+		| TILDA factor {$$ = new Node("factor ~", $2);}
+		| power {$$ = $1;}
 		;
-power: atom {}
-		| atom STAR_STAR factor {}
+power: atom STAR_STAR factor {$$ = new Node("power ** ", $1,$3);}
+		| atom {$$ = $1; }
 		;
-atom : T_NAME {}
-		| T_NUMBER {} 
-		| T_STRING {}
-		| "..." {}
-		| "None" {}
-		| "True" {}
-		| "False" {}
+atom : T_NAME {$$ = $1;}
+		| T_NUMBER {$$ = $1;} 
+		| T_STRING {$$ = $1;}
+		| "..." {$$ = $1;}
+		| "None" {$$ = $1;}
+		| "True" {$$ = $1;}
+		| "False" {$$ = $1;}
 		;
 
 %%
