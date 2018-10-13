@@ -8,6 +8,54 @@ Terminals unused in grammar
    DEDENT
    TOK_STUFF
    TOK_REST
+   DEF
+   MINUS_GREATER
+   L_PAREN
+   R_PAREN
+   EQUAL
+   COMMA
+   COLON
+   SEMICOLON
+   PLUS_EQUAL
+   MINUS_EQUAL
+   STAR_EQUAL
+   AT_EQUAL
+   R_SLASH_EQUAL
+   PERCENT_EQUAL
+   AND_EQUAL
+   BAR_EQUAL
+   XOR_EQUAL
+   LESS_LESS_EQUAL
+   GREATER_GREATER_EQUAL
+   STAR_STAR_EQUAL
+   SLASH_SLASH_EQUAL
+   T_PASS
+   T_BREAK
+   T_CONTINUE
+   T_RETURN
+   FROM
+   T_DOT
+   T_DOT_DOT_DOT
+   T_AS
+   T_IF
+   T_ELIF
+   T_ELSE
+   T_WHILE
+   T_FOR
+   T_IN
+   LIT_OR
+   LIT_AND
+   LIT_NOT
+   LESS
+   GREATER
+   EQUAL_EQUAL
+   GREATER_EQUAL
+   LESS_EQUAL
+   LESS_GREATER
+   EXCL_EQUAL
+   NOT_IN
+   T_IS
+   IS_NOT
 
 
 Grammar
@@ -94,37 +142,85 @@ T_AT (281) 21
 PERCENT (282) 23
 AND (283) 11
 XOR (284) 9
-"..." (285) 34
-"None" (286) 35
-"True" (287) 36
-"False" (288) 37
+DEF (285)
+MINUS_GREATER (286)
+L_PAREN (287)
+R_PAREN (288)
+EQUAL (289)
+COMMA (290)
+COLON (291)
+SEMICOLON (292)
+PLUS_EQUAL (293)
+MINUS_EQUAL (294)
+STAR_EQUAL (295)
+AT_EQUAL (296)
+R_SLASH_EQUAL (297)
+PERCENT_EQUAL (298)
+AND_EQUAL (299)
+BAR_EQUAL (300)
+XOR_EQUAL (301)
+LESS_LESS_EQUAL (302)
+GREATER_GREATER_EQUAL (303)
+STAR_STAR_EQUAL (304)
+SLASH_SLASH_EQUAL (305)
+T_PASS (306)
+T_BREAK (307)
+T_CONTINUE (308)
+T_RETURN (309)
+FROM (310)
+T_DOT (311)
+T_DOT_DOT_DOT (312)
+T_AS (313)
+T_IF (314)
+T_ELIF (315)
+T_ELSE (316)
+T_WHILE (317)
+T_FOR (318)
+T_IN (319)
+LIT_OR (320)
+LIT_AND (321)
+LIT_NOT (322)
+LESS (323)
+GREATER (324)
+EQUAL_EQUAL (325)
+GREATER_EQUAL (326)
+LESS_EQUAL (327)
+LESS_GREATER (328)
+EXCL_EQUAL (329)
+NOT_IN (330)
+T_IS (331)
+IS_NOT (332)
+"..." (333) 34
+"None" (334) 35
+"True" (335) 36
+"False" (336) 37
 
 
 Nonterminals, with rules where they appear
 
-$accept (34)
+$accept (82)
     on left: 0
-start (35)
+start (83)
     on left: 1 2 3 4 5, on right: 0
-star_expr (36)
+star_expr (84)
     on left: 6, on right: 2 4
-expr (37)
+expr (85)
     on left: 7 8, on right: 1 3 6 7
-xor_expr (38)
+xor_expr (86)
     on left: 9 10, on right: 7 8 9
-and_expr (39)
+and_expr (87)
     on left: 11 12, on right: 9 10 11
-shift_expr (40)
+shift_expr (88)
     on left: 13 14 15, on right: 11 12 13 14
-arith_expr (41)
+arith_expr (89)
     on left: 16 17 18, on right: 13 14 15 16 17
-term (42)
+term (90)
     on left: 19 20 21 22 23 24, on right: 16 17 18 19 20 21 22 23
-factor (43)
+factor (91)
     on left: 25 26 27 28, on right: 19 20 21 22 23 24 25 26 27 29
-power (44)
+power (92)
     on left: 29 30, on right: 28
-atom (45)
+atom (93)
     on left: 31 32 33 34 35 36 37, on right: 29 30
 
 

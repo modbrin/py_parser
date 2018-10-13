@@ -49,6 +49,59 @@ void yyerror(const char *s);
 %token AND
 %token XOR
 
+
+%token DEF 
+%token MINUS_GREATER
+%token L_PAREN
+%token R_PAREN
+%token EQUAL
+%token COMMA
+%token COLON
+%token SEMICOLON
+%token PLUS_EQUAL
+%token MINUS_EQUAL
+%token STAR_EQUAL
+%token AT_EQUAL
+%token R_SLASH_EQUAL
+%token PERCENT_EQUAL
+%token AND_EQUAL
+%token BAR_EQUAL
+%token XOR_EQUAL
+%token LESS_LESS_EQUAL
+%token GREATER_GREATER_EQUAL
+%token STAR_STAR_EQUAL 
+%token SLASH_SLASH_EQUAL
+%token T_PASS
+%token T_BREAK 
+%token T_CONTINUE  
+%token T_RETURN 
+%token IMPORT
+%token FROM
+%token T_DOT 
+%token T_DOT_DOT_DOT
+%token T_AS
+%token T_IF 
+%token T_ELIF 
+%token T_ELSE
+%token T_WHILE 
+%token T_FOR
+%token T_IN
+
+%token LIT_OR 
+%token LIT_AND
+%token LIT_NOT
+%token LESS
+%token GREATER
+%token EQUAL_EQUAL
+%token GREATER_EQUAL
+%token LESS_EQUAL
+%token LESS_GREATER
+%token EXCL_EQUAL
+%token NOT_IN
+%token T_IS
+%token IS_NOT
+
+
 %locations
 %start start
 
