@@ -116,11 +116,11 @@ void set_yycolumn(int val) {
                         yylval = new Node("DEDENT");
                         return DEDENT;
                     } else {
-                        yyterminate();
+                        // std::cout<<"EOF"<<std::endl;
+                        yylval = new Node("EOF");
+                        return EOF;
+                        // yyterminate();
                     }
-                    std::cout<<"EOF"<<std::endl;
-                    yylval = new Node("EOF");
-                    return EOF;
                 }
 
 <indent>.       {
@@ -167,7 +167,7 @@ void set_yycolumn(int val) {
                         } else {
                             BEGIN(indent_caller);
                         }
-                        std::cout<<"DEDENT"<<std::endl;
+                        // std::cout<<"DEDENT"<<std::endl;
                         yylval = new Node("DEDENT");
                         return DEDENT;
                     } else {
