@@ -3,6 +3,9 @@
 #include <cstdio>
 #include <iostream>
 #include <string>
+#include "string.h"
+
+using namespace std;
 
 // stuff from flex that bison needs to know about:
 extern "C" int yylex();
@@ -11,7 +14,12 @@ extern "C" FILE *yyin;
 
 void yyerror(const char *s);
 
-#define YYSTYPE std::string
+
+#include "node.h"
+
+// Node* top = new Node("root");
+
+#define YYSTYPE Node*
 %}
 
 %token NONE
@@ -46,15 +54,15 @@ void yyerror(const char *s);
 
 %%
 
-start: expr NEWLINE {}
-		| star_expr NEWLINE {}
+start: expr NEWLINE {$$ = $1; $$->print(); }
+		| star_expr NEWLINE {$$ = $1; $$->print(); }
 		;
 
-star_expr: MULTIPLY expr {}
+star_expr: MULTIPLY expr {$$ = new Node("star expr",$2); }
 			;
 
-expr: xor_expr {}
-	  | expr OR xor_expr {}
+expr: xor_expr {$$ = $1;}
+	  | expr OR xor_expr { $$ = new Node("expr OR",$1,$3);}
 	  ;
 xor_expr: and_expr {}
 			| xor_expr XOR and_expr {}

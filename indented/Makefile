@@ -6,7 +6,7 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c: scanner.l
 	flex scanner.l
 
-compile:  lex.yy.c parser.tab.c parser.tab.h
+compile:  lex.yy.c parser.tab.c parser.tab.h node.h
 	g++ -c lex.yy.c parser.tab.c
 
 link: compile
