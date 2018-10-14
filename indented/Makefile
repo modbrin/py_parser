@@ -1,4 +1,4 @@
-all: link clean makepre
+all: link makepre clean
 
 parser.tab.c parser.tab.h: parser.y
 	bison -d parser.y --verbose
@@ -13,7 +13,8 @@ link: compile
 	g++ -o parser lex.yy.o parser.tab.o
 
 clean:
-	del lex.yy.* parser.tab.*
+	-rm lex.yy.* parser.tab.*
+	-del lex.yy.* parser.tab.*
 
 makepre: preprocessor.cpp
 	g++ -std=c++11 -o prepr preprocessor.cpp

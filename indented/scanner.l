@@ -23,9 +23,9 @@
 
  /*%option debug*/
 %%
-1INDENT1 {yylval = new Node("INDENT"); std::cout<<"INDENT"<<std::endl; return INDENT;}
-1DEDENT1 {yylval = new Node("DEDENT"); std::cout<<"DEDENT"<<std::endl; return DEDENT;}
-\n    { yylval = new Node("NEWLINE"); std::cout<<"NEWLINE"<<std::endl; return NEWLINE;}
+1INDENT1 {yylval = new Node("INDENT"); return INDENT;}
+1DEDENT1 {yylval = new Node("DEDENT"); return DEDENT;}
+\n    { yylval = new Node("NEWLINE"); return NEWLINE;}
 import { yylval = new Node(yytext); return IMPORT; }
 None { yylval = new Node(yytext);return NONE; }
 True { yylval = new Node(yytext);return TRUE; }
@@ -99,7 +99,7 @@ is\snot { yylval = new Node(yytext);return IS_NOT; }
 ["][0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]'-]*["] { yylval = new Node(yytext); return T_STRING; }
 \'[ 0-9A-Za-z#$%=@!{},`~&*()<>?.:;_|^/+\t\r\n\[\]"-]*\' { yylval = new Node(yytext); return T_STRING; }
 [ ]
-<<EOF>> { yylval = new Node(yytext); std::cout<<"END"<<std::endl;return END; }
+<<EOF>> { yylval = new Node(yytext); return END; }
 (.|\n)  { std::cerr << "Unexpected symbol."<<yytext << std::endl; exit(1); }
 
 %%

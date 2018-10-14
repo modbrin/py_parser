@@ -1,0 +1,13 @@
+fun(a)
+fun(a,b)
+import asdsad
+import a.a.a.asds
+from asd.a.sfa.asfas import a as b
+from asd.a.sfa.asfas import *
+class aa  : 
+1INDENT1 2 = 3
+1DEDENT1 class aa():
+1INDENT1 2 + 3
+1DEDENT1 class aa(aa,aa,aa):
+1INDENT1 2 + 3
+1DEDENT1 

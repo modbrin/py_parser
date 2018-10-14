@@ -13,7 +13,7 @@ extern "C" int yyparse();
 extern "C" FILE *yyin;
 
 void yyerror(const char *s);
-#define YYDEBUG 1
+#define YYDEBUG 0
 
 #include "node.h"
 
@@ -47,8 +47,6 @@ void yyerror(const char *s);
 %token PERCENT
 %token AND
 %token XOR
-
-
 %token DEF 
 %token MINUS_GREATER
 %token L_PAREN
@@ -85,7 +83,6 @@ void yyerror(const char *s);
 %token T_WHILE 
 %token T_FOR
 %token T_IN
-
 %token CLASS
 %token LIT_OR 
 %token LIT_AND
@@ -106,57 +103,12 @@ void yyerror(const char *s);
 %start start
 
 
-/*
-single_input: NEWLINE | simple_stmt | compound_stmt NEWLINE
-file_input: (NEWLINE | stmt)* ENDMARKER
-eval_input: testlist NEWLINE* ENDMARKER
-funcdef: 'def' NAME parameters :' suite
-parameters: '(' [NAME (, NAME )* ] ')'
-stmt: simple_stmt | compound_stmt
-simple_stmt: small_stmt (';' small_stmt)* [';'] NEWLINE
-small_stmt: (expr_stmt | "pass" | flow_stmt | import_stmt)
-expr_stmt: testlist_star_expr ( (augassign testlist) |
-                     ('=' (testlist_star_expr)*) )
-augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
-            '<<=' | '>>=' | '**=' | '//=')
-flow_stmt = 'break' | 'continue'| 'return' [testlist]
-/*
-
-
-
-compound_stmt: if_stmt | while_stmt | for_stmt | funcdef | classdef
-if_stmt: 'if' test ':' suite ('elif' test ':' suite)* [else ':' suite]
-while_stmt: 'while' test ':' suite ['else' ':' suite]
-for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
-suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
-test: or_test ['if' or_test 'else' test]
-or_test: and_test ('or' and_test)*
-and_test: not_test ('and' not_test)*
-not_test: 'not' not_test | comparison
-comparison: expr (comp_op expr)*
-comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
-*/
-
 %%
 
-/*
-start: expr NEWLINE { $$ = $1; $$->print(); }
-		| star_expr NEWLINE{$$ = $1; $$->print(); }
-		| expr { $$ = $1; $$->print(); }
-		| star_expr{$$ = $1; $$->print(); }
-		| END {$$ = $1; $$->print();}
-		| compound_stmt {$$ = $1; $$->print();}
-		| compound_stmt NEWLINE {$$ = $1; $$->print();}
-		;
-
-*/
 start: eval_input { $$ = $1;cout <<"eval input"<<endl; $$->print(); return 0; }
 		| file_input { $$ = $1; cout <<"file input "<<endl; $$->print(); return 0; }
 		;
-/*
-start: file_input { $$ = $1; $$->print(); }
-		;
-*/
+
 eval_input: testlist END {$$ = $1; }
 			| testlist NEWLINE END {$$ = new Node("eval input ",$1,$2); };
 			;
@@ -454,13 +406,10 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // parse through the input until there is no more:
+    // parse through the input
 	yyparse();
     
 	return 0;
-
-    // Only in newer versions, apparently.
-    // yylex_destroy();
 }
 
 void yyerror(const char *s) {
