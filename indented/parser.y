@@ -13,7 +13,7 @@ extern "C" int yyparse();
 extern "C" FILE *yyin;
 
 void yyerror(const char *s);
-#define YYDEBUG 0
+#define YYDEBUG 1
 
 #include "node.h"
 
@@ -86,6 +86,7 @@ void yyerror(const char *s);
 %token T_FOR
 %token T_IN
 
+%token CLASS
 %token LIT_OR 
 %token LIT_AND
 %token LIT_NOT
@@ -151,7 +152,6 @@ start: expr NEWLINE { $$ = $1; $$->print(); }
 */
 start: eval_input { $$ = $1;cout <<"eval input"<<endl; $$->print(); return 0; }
 		| file_input { $$ = $1; cout <<"file input "<<endl; $$->print(); return 0; }
-		| single_input {$$ = $1;cout <<"single input " <<endl; $$->print(); return 0;}
 		;
 /*
 start: file_input { $$ = $1; $$->print(); }
@@ -166,11 +166,13 @@ single_input: NEWLINE  {$$ = $1; }
 			 | compound_stmt NEWLINE {$$ = $1; }
 			 ;
 
-file_input: file_input NEWLINE END {$$ = new Node("file input ",$1,$2); };
-			| file_input stmt END{$$ = new Node("file input ",$1,$2); };
-			| stmt END{$$ = $1; }
-			| NEWLINE END{$$ = $2; }
-			| END{$$ = $1; }
+
+file_input : file_inp END {$$ = $1; }
+
+file_inp: file_inp NEWLINE{$$ = new Node("file inp ",$1,$2); };
+			| file_inp stmt{$$ = new Node("file inp ",$1,$2); };
+			| stmt{$$ = $1; }
+			| NEWLINE{$$ = $1; }
 			;
 
 stmt: simple_stmt 	 {$$ = $1; }
@@ -195,7 +197,34 @@ simple_stmt: small_stmt small_stmts NEWLINE {$$ = new Node("simple_stmt ",$1,$2)
 small_stmt: expr_stmt  {$$ = $1; }
 			| T_PASS  {$$ = $1; }
 			| flow_stmt {$$ = $1; };
-		 //	| import_stmt  {$$ = $1; }
+		 	| import_stmt  {$$ = $1; }
+		 	| funcall {$$ = $1; }
+			;
+
+
+
+import_stmt : import_name {$$ = $1; }
+			| import_from {$$ = $1; }
+			;
+import_name : IMPORT dotted_as_name {$$ = $2;}
+			;
+
+
+
+import_from: FROM dotted_name IMPORT import_as_name {$$ = new Node("import from ",$2,$4);}
+			| FROM dotted_name IMPORT MULTIPLY {$$ = new Node("import from ",$2,$4);}
+			;
+
+import_as_name: T_NAME T_AS  T_NAME {$$ = new Node("import as names ",$1,$3);}
+			| T_NAME {$$ = $1; }
+			;
+
+
+dotted_as_name: dotted_name T_AS T_NAME {$$ = new Node("dotted_as_name",$1,$3);}
+				| dotted_name{$$ = $1;}
+				;
+dotted_name : dotted_name T_DOT T_NAME {$$ = new Node("dotted_name ",$1,$3);}
+			| T_NAME {$$ = $1;}
 			;
 
 
@@ -256,7 +285,22 @@ flow_stmt: T_BREAK  {$$ = $1; }
 compound_stmt: if_stmt {$$ = $1; }
 			| while_stmt {$$ = $1; }
 			| for_stmt {$$ = $1; }  //ADD HERE
+			| funcdef  {$$ = $1; }
+			| classdef  {$$ = $1; }
 			;
+funcdef : DEF T_NAME L_PAREN parameters R_PAREN COLON suite {$$ = new Node("funcdef ",$2,$4,$7);}
+		 | DEF T_NAME L_PAREN R_PAREN COLON suite {$$ = new Node("funcdef ",$2,$6);}
+		 ;
+
+funcall : T_NAME L_PAREN parameters R_PAREN{$$ = new Node("func call ",$1,$3);}
+		 | T_NAME L_PAREN R_PAREN{$$ = new Node("func call ",$1);}
+		 ;
+
+
+parameters : parameters COMMA T_NAME {$$ = new Node("parameters name",$1,$3)};
+					| T_NAME {$$ = $1; }
+					;
+
 
 if_stmt: T_IF test COLON suite elif_else_stmt {$$ = new Node("if ", $2,$4,$5);}
 
@@ -349,6 +393,8 @@ power: atom STAR_STAR factor {$$ = new Node("power ** ", $1,$3);}
 		| atom {$$ = $1; }
 		;
 atom : T_NAME {$$ = $1;}
+		| L_PAREN test R_PAREN {$$ = new Node("( ) ",$2)};
+		| L_PAREN star_expr R_PAREN {$$ = new Node("( ) ",$2)};
 		| T_NUMBER {$$ = $1;} 
 		| T_STRING {$$ = $1;}
 		| T_DOT_DOT_DOT {$$ = $1;}
@@ -369,6 +415,8 @@ expr_star_exprs: expr_star_exprs COMMA expr COMMA {$$ = new Node("expr_star_expr
 				;
 
 
+
+
 exprlist: expr expr_star_exprs {$$ = new Node("exprlist ", $1,$2);}
 		| expr {$$ = $1;}
 		;
@@ -383,6 +431,10 @@ testlist: test tests {$$ = new Node("testlist ", $1,$2);}
 		  |  test {$$ = $1;}
 		  ;
 
+classdef: CLASS T_NAME COLON suite {$$ = new Node("class def",$2,$4);}
+		| CLASS T_NAME L_PAREN R_PAREN COLON suite {$$ = new Node("class def",$2,$6);}
+		| CLASS T_NAME L_PAREN parameters R_PAREN COLON suite {$$ = new Node("class def",$2,$4,$7);}
+		;
 %%
 
 const char* g_current_filename = "stdin";

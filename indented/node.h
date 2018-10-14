@@ -15,7 +15,7 @@ public:
             std::cout<<add <<"Token "<<name<<std::endl; 
             return;
         }
-        std::cout<<add <<"Start "<<name<<std::endl;   
+        std::cout<<add <<"{ "<<name<<":"<<std::endl;   
         if(left)
             left->print(add + "   ");
         if(right)
@@ -24,7 +24,7 @@ public:
             third->print(add + "   ");
         if(fourth)
             fourth->print(add + "   ");
-        std::cout <<add<<"End "<<name << std::endl;
+        std::cout <<add<<""<<name  <<" } "<< std::endl;
     }
 
 };
